@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Sport Survey</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+</head>
+<body>
+        <div class="container">    
+            <h2>Survey Questions</h2>
+            <hr>
+            <h3>Your Information</h3>
+            <h4>Name (Required Field)</h4>
+            <input type="text" id="name" class="form-control" required>
+
+            <h4>Photo (Required Field)</h4>
+            <input type="text" id="photo" class="form-control" required>
+
+            <hr>
+
+            <h3>Question 1</h3>
+            <h4>What sport are you looking to play?</h4>
+            <select class="chosen-select" id="q1">
+              <option value=""></option>
+              <option value="1">Baseball</option>
+              <option value="2">Hockey</option>
+              <option value="3">Basketball</option>
+              <option value="4">Volleyball</option>
+              <option value="5">Soccer</option>
+            </select>
+
+            <h3>Question 2</h3>
+            <h4>How would you rate your skill level? (1=Beginner, 5=Expert)</h4>
+            <select class="chosen-select" id="q2">
+              <option value=""></option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+
+            <h3>Question 3</h3>
+            <h4>How often do you play? (1=Rarely, 5=Daily)</h4>
+            <select class="chosen-select" id="q3">
+              <option value=""></option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+
+            <h3>Question 4</h3>
+            <h4>What level of competition are you looking for? (1=Friendly, 5=Competitive)</h4>
+            <select class="chosen-select" id="q4">
+              <option value=""></option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+
+            <h3>Question 5</h3>
+            <h4>What is your highest level of competive play?</h4>
+            <select class="chosen-select" id="q5">
+              <option value=""></option>
+              <option value="1">Pick-Up</option>
+              <option value="2">Rec League</option>
+              <option value="3">High School</option>
+              <option value="4">Collegiate</option>
+              <option value="5">Professional</option>
+            </select>
+
+            <hr>
+
+            <button type="submit" id="submitSurvey" class="btn btn-success btn-lg btn-block">Submit</button>
+
+            <hr>
+
+            <footer class="footer">
+                    <div class="container">
+                      <p><a href="/api/friends">API Friends List</a> | <a href="https://github.com/gaccettu/friendfinder">GitHub Repo</a></p>
+                    </div>
+            </footer>
+
+        </div>
+
+   <!-- Modal -->
+<div id="matchModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+  
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Play Ball!</h4>
+        </div>
+        <div class="modal-body">
+          <h2 id="buddyName"></h2>
+          <img id="buddyImg" src="" alt="">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+
+</body>
+</html>
+
+<script type="text/javascript">
+
+  $("#submitSurvey").on("click", function(submit){
+    submit.preventDefault();
+
+    function validation(){
+      var filled = true;
+      $(".form-control").each(function(){
+        if($(this).val() === ""){
+          filled = false;
+        }
+      });
+
+      $(".chosen-select").each(function(){
+        if($(this).val() === ""){
+        filled = false;
+        }
+      });
+      return filled;
+    }
+
+    if (validation()){
+
+    //create my object with all of the new reservation data
+    var newUser = {
+      name: $("#name").val().trim(),
+      photo: $("#photo").val().trim(),
+      scores: [
+        $("#q1").val(),
+        $("#q2").val(),
+        $("#q3").val(),
+        $("#q4").val(),
+        $("#q5").val()      
+      ] 
+    };
+
+    console.log(newUser);
+
+    $.post("/api/friends", newUser, function(data) {
+
+      $("#buddyName").text(data.name);
+      $("#buddyPhoto").attr("src", data.photo);
+
+      $("#matchModal").modal("toggle");
+
+    });
+  } else {
+    alert("Please answer all fields!")
+  }
+
+    });
+
+</script>
